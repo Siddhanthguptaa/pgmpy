@@ -264,9 +264,10 @@ class ExpertKnowledge(BaseEstimator):
 
         # Step 2: Validate the temporal order (if given) covers exactly the data's variables.
         if self.temporal_order is not None:
-            if len(set.intersection(*map(set, self.temporal_order))) != 0:
+            ordered_nodes = list(chain(*self.temporal_order))
+            if len(ordered_nodes) != len(set(ordered_nodes)):
                 raise ValueError("Node found in multiple tiers of temporal order.")
-            if data is not None and set(chain(*self.temporal_order)) != set(data.columns):
+            if data is not None and set(ordered_nodes) != set(data.columns):
                 missing = set(data.columns) - set(chain(*self.temporal_order))
                 raise ValueError(f"Missing nodes in temporal order - {missing}")
 

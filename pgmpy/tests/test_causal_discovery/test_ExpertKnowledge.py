@@ -143,6 +143,20 @@ class TestExpertKnowledge:
         with pytest.raises(ValueError, match="data"):
             ExpertKnowledge(search_space=[("A", "B")]).fit()
 
+    def test_fit_temporal_order_validation(self):
+        data = pd.DataFrame({c: [0, 1] for c in ["A", "B"]})
+
+        # A single tier is a valid order that puts no constraint on the variables.
+        ek = ExpertKnowledge(temporal_order=[["A", "B"]]).fit(data)
+        assert ek.temporal_ordering_ == {"A": 0, "B": 0}
+
+        # Repeats are rejected whichever tiers they appear in.
+        with pytest.raises(ValueError, match="multiple tiers"):
+            ExpertKnowledge(temporal_order=[["A"], ["B"], ["A"]]).fit(data)
+
+        with pytest.raises(ValueError, match="Missing nodes"):
+            ExpertKnowledge(temporal_order=[]).fit(data)
+
     def test_unknown_search_space_strategy_raises(self):
         data = pd.DataFrame({c: [0, 1] for c in ["A", "B"]})
         with pytest.raises(ValueError, match="marginally_dependent"):
