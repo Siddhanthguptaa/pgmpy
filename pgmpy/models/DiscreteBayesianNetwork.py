@@ -1582,7 +1582,7 @@ class DiscreteBayesianNetwork(_FileIOMixin, DAG):
         model = self.copy()
         state_names = self.states
 
-        evidence = {} if evidence is None else evidence
+        evidence = {} if evidence is None else dict(evidence)
         for var, state in evidence.items():
             if state not in state_names[var]:
                 raise ValueError(f"Evidence state: {state} for {var} doesn't exist")

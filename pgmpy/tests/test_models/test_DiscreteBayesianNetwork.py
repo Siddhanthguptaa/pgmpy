@@ -1818,6 +1818,16 @@ class TestSimulation(unittest.TestCase):
         alarm_inference_marginals = self.infer_alarm.query(list(nodes), joint=False)
         self._test_alarm_marginals_equal(alarm_samples, alarm_inference_marginals)
 
+    def test_simulate_does_not_modify_evidence(self):
+        virtual_evidence = TabularCPD("U", 2, [[0.0], [1.0]])
+        evidence = {"Z": 0}
+
+        for _ in range(2):
+            self.con_model.simulate(
+                n_samples=10, evidence=evidence, virtual_evidence=[virtual_evidence], show_progress=False
+            )
+            self.assertEqual(evidence, {"Z": 0})
+
     def test_simulate_invalid_virtual_evidence_scope(self):
         model = DiscreteBayesianNetwork([("A", "B")])
         model.add_cpds(
