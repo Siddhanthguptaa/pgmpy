@@ -715,8 +715,10 @@ class DAG(_GraphRolesMixin, nx.DiGraph):
         if not isinstance(model, DAG):
             raise TypeError(f"Model must be an instance of DAG. Got type: {type(model)}")
 
+        self_immoralities = {node: set(pairs) for node, pairs in self.get_immoralities().items()}
+        model_immoralities = {node: set(pairs) for node, pairs in model.get_immoralities().items()}
         if (self.to_undirected().edges() == model.to_undirected().edges()) and (
-            self.get_immoralities() == model.get_immoralities()
+            self_immoralities == model_immoralities
         ):
             return True
         return False

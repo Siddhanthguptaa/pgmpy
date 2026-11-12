@@ -363,6 +363,11 @@ class TestBayesianNetworkMethods(unittest.TestCase):
         G2 = DAG([("B", "A"), ("C", "A"), ("D", "B"), ("D", "C")])
         self.assertFalse(G1.is_iequivalent(G2))
 
+        # The order in which the edges were added must not matter.
+        G1 = DAG([("A", "Z"), ("B", "Z"), ("C", "Z")])
+        G2 = DAG([("C", "Z"), ("B", "Z"), ("A", "Z")])
+        self.assertTrue(G1.is_iequivalent(G2))
+
     def test_copy(self):
         model_copy = self.G1.copy()
         self.assertEqual(sorted(self.G1.nodes()), sorted(model_copy.nodes()))
